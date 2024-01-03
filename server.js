@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const port = process.env.PORT || 7000;
 const config = require('./Config/config.js');
-const User = require('./Models/Users/user.js');
+const userController = require('./Controllers/UsersController.js')
 
 const app = express();
 app.use(express.json());
@@ -35,18 +35,8 @@ process.on('SIGINT', () => {
     });
 });
 
-app.post('/signup', async (req, res) => {
-    try {
-      const { username, email, mobile, password } = req.body;
-      const newUser = new User({ username, email, mobile, password });
-      const savedUser = await newUser.save();
-      res.json(savedUser);
-    } catch (error) {
-      console.error('Error during signup:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-
+app.post('/signup', userController.signup);
+app.post('/login', userController.login);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
